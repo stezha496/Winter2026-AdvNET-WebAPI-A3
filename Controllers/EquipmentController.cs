@@ -11,6 +11,11 @@ public class EquipmentController : ControllerBase
     // Inject repository
     private readonly IEquipmentRepository _equipmentRepository;
 
+    public EquipmentController(IEquipmentRepository equipmentRepository)
+    {
+        _equipmentRepository = equipmentRepository;
+    }
+
     [HttpGet]
     public List<Equipment> GetAllEquipment() {
         return _equipmentRepository.GetAllEquipment();

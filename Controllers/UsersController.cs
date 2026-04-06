@@ -10,6 +10,10 @@ public class UsersController : ControllerBase
 {
     // Inject repository
     private readonly IUserRepository _userRepository;
+    public UsersController(IUserRepository userRepository)
+    {
+        _userRepository = userRepository;
+    }
 
     [HttpGet]
     public List<User> GetAllUsers()
@@ -24,10 +28,12 @@ public class UsersController : ControllerBase
         return _userRepository.GetUserById(userId);
     }
 
+    // TODO
+    // Can only have 1 parameter?
     // Updates password, phone number
-    [HttpPut("update")]
-    public void UpdateCurrentUser(User currentUser, User updatedUser)
-    {
-        _userRepository.UpdateCurrentUser(currentUser, updatedUser);
-    }
+    //[HttpPut("update")]
+    //public void UpdateCurrentUser(User currentUser, User updatedUser)
+    //{
+    //    _userRepository.UpdateCurrentUser(currentUser, updatedUser);
+    //}
 }

@@ -11,6 +11,11 @@ public class LoansController : ControllerBase
     // Inject repository
     private readonly ILoanRepository _loanRepository;
 
+    public LoansController(ILoanRepository loanRepository)
+    {
+        _loanRepository = loanRepository;
+    }
+
     [HttpGet("my-loans")]
     public List<Loan> GetLoansByUser(int userId)
     {

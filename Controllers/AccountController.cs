@@ -11,11 +11,16 @@ public class AccountController : ControllerBase
     // Inject repository
     private readonly IUserRepository _userRepository;
 
+    public AccountController(IUserRepository userRepository)
+    {
+        _userRepository = userRepository;
+    }
+
     [HttpPost("register")]
     public User Post([FromBody] User user) => _userRepository.AddUser(user);
 
-    [HttpPost("login")]
+    //[HttpPost("login")]
 
-    [HttpPost("logout")]
+    //[HttpPost("logout")]
 
 }
