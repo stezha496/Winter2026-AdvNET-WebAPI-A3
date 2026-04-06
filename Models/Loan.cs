@@ -2,4 +2,9 @@
 
 public class Loan
 {
+    public int Id { get; set; }
+    public string? UserId { get; set; }
+    public int? EquipmentId { get; set; }
+    public DateOnly? CheckoutDate { get; set; }
+    public DateOnly? ExpectedReturnDate { get; set; }
 }
