@@ -67,7 +67,7 @@ public class NotificationsController : ControllerBase
     //}
 
     [HttpPut("{id}/read")]
-    public Notification UpdateNotificationRead(int notificationId) { 
-        return _notificationRepository.UpdateNotificationRead(notificationId);
+    public Notification? UpdateNotificationRead(int notificationId) { 
+        return _notificationRepository.UpdateNotificationRead(notificationId).Result;
     }
 }

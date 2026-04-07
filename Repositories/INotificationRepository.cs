@@ -4,7 +4,7 @@ namespace _991745453_IT_ASSET_API.Repositories;
 
 public interface INotificationRepository
 {
-    List<Notification> GetNotificationsByUser(int userId);
+    Task<List<Notification>> GetNotificationsByUser(string userId);
 
-    Notification UpdateNotificationRead(int notificationId);
+    Task<Notification?> UpdateNotificationRead(int notificationId);
 }

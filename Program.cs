@@ -26,16 +26,21 @@ public class Program
         builder.Services.AddSingleton<INotificationRepository, NotificationRepository>();
         builder.Services.AddSingleton<IUserRepository, UserRepository>();
 
+        // Swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
+            //app.MapOpenApi();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
         app.UseAuthorization();
-
 
         app.MapControllers();
 

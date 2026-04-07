@@ -1,25 +1,29 @@
-﻿using _991745453_IT_ASSET_API.Models;
+﻿using _991745453_IT_ASSET_API.Data;
+using _991745453_IT_ASSET_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace _991745453_IT_ASSET_API.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository(AppDbContext context) : IUserRepository
 {
-    public User AddUser(User user)
+    public async Task AddUser(User user)
     {
-        throw new NotImplementedException();
+        await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
     }
 
-    public List<User> GetAllUsers()
+    public async Task<List<User>> GetAllUsers()
     {
-        throw new NotImplementedException();
+        return await context.Users
+            .ToListAsync();
     }
 
-    public User GetUserById(int id)
+    public async Task<User?> GetUserById(int id)
     {
-        throw new NotImplementedException();
+        return await context.Users.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public void UpdateCurrentUser(User currentUser, User updatedUser)
+    public Task UpdateCurrentUser(User currentUser, User updatedUser)
     {
         throw new NotImplementedException();
     }

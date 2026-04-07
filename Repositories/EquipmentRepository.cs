@@ -1,30 +1,35 @@
-﻿using _991745453_IT_ASSET_API.Models;
+﻿using _991745453_IT_ASSET_API.Data;
+using _991745453_IT_ASSET_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace _991745453_IT_ASSET_API.Repositories;
 
-public class EquipmentRepository : IEquipmentRepository
+public class EquipmentRepository(AppDbContext context) : IEquipmentRepository
 {
-    public Equipment AddEquipment(Equipment equipment)
+    public async Task AddEquipment(Equipment equipment)
     {
-        throw new NotImplementedException();
+        await context.Equipment.AddAsync(equipment);
+        await context.SaveChangesAsync();
     }
 
-    public void DeleteEquipmentById(int id)
+    public async Task DeleteEquipmentById(int id)
     {
-        throw new NotImplementedException();
+        await context.Equipment
+            .Where(x => x.Id == id)
+            .ExecuteDeleteAsync();
     }
 
-    public List<Equipment> GetAllEquipment()
+    public async Task<List<Equipment>> GetAllEquipment()
     {
-        throw new NotImplementedException();
+        return await context.Equipment.ToListAsync();
     }
 
-    public Equipment GetEquipmentById(int id)
+    public async Task<Equipment?> GetEquipmentById(int id)
     {
-        throw new NotImplementedException();
+        return await context.Equipment.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public void UpdateEquipment(int equipmentId, Equipment equipment)
+    public Task UpdateEquipment(int equipmentId, Equipment equipment)
     {
         throw new NotImplementedException();
     }

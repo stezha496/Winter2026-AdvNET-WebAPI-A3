@@ -4,10 +4,10 @@ namespace _991745453_IT_ASSET_API.Repositories;
 
 public interface ILoanRepository
 {
-    List<Loan> GetAllLoans();
-    List<Loan> GetLoansByUser(int userId);
+    Task<List<Loan>> GetAllLoans();
+    Task<List<Loan>> GetLoansByUser(string userId);
     // Create a Loan inside this function
-    Loan CheckoutAsset(Loan checkout);
+    Task<Loan> CheckoutAsset(Loan checkout);
     // Update Loan status
-    Loan CheckinAsset(int loanId);
+    Task<Loan> CheckinAsset(int loanId);
 }

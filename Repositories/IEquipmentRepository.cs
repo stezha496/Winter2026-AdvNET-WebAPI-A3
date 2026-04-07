@@ -4,10 +4,10 @@ namespace _991745453_IT_ASSET_API.Repositories;
 
 public interface IEquipmentRepository
 {
-    List<Equipment> GetAllEquipment();
-    Equipment GetEquipmentById(int id);
-    Equipment AddEquipment(Equipment equipment);
+    Task<List<Equipment>> GetAllEquipment();
+    Task<Equipment?> GetEquipmentById(int id);
+    Task AddEquipment(Equipment equipment);
 
-    void UpdateEquipment(int equipmentId, Equipment equipment);
-    void DeleteEquipmentById(int id);
+    Task UpdateEquipment(int equipmentId, Equipment equipment);
+    Task DeleteEquipmentById(int id);
 }

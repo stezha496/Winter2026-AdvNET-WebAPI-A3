@@ -18,17 +18,17 @@ public class EquipmentController : ControllerBase
 
     [HttpGet]
     public List<Equipment> GetAllEquipment() {
-        return _equipmentRepository.GetAllEquipment();
+        return _equipmentRepository.GetAllEquipment().Result;
     }
 
     [HttpGet("{id}")]
     public Equipment GetEquipmentById(int userId)
     {
-        return _equipmentRepository.GetEquipmentById(userId);
+        return _equipmentRepository.GetEquipmentById(userId).Result;
     }
 
     [HttpPost]
-    public Equipment Post([FromBody] Equipment equipment) => _equipmentRepository.AddEquipment(equipment);
+    public Task Post([FromBody] Equipment equipment) => _equipmentRepository.AddEquipment(equipment);
 
     [HttpPost("{id}")]
     public void UpdateEquipment(int equipmentId, Equipment newEquipment)

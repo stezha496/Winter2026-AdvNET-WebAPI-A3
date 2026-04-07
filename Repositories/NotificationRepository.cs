@@ -1,16 +1,28 @@
-﻿using _991745453_IT_ASSET_API.Models;
+﻿using _991745453_IT_ASSET_API.Data;
+using _991745453_IT_ASSET_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace _991745453_IT_ASSET_API.Repositories;
 
-public class NotificationRepository : INotificationRepository
+public class NotificationRepository(AppDbContext context) : INotificationRepository
 {
-    public List<Notification> GetNotificationsByUser(int userId)
+    public async Task<List<Notification>> GetNotificationsByUser(string userId)
     {
-        throw new NotImplementedException();
+        return await context.Notifications
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
     }
 
-    public Notification UpdateNotificationRead(int notificationId)
+    public async Task<Notification?> UpdateNotificationRead(int notificationId)
     {
-        throw new NotImplementedException();
+        Notification? toUpdate = await context.Notifications
+            .FirstOrDefaultAsync(x => x.NotificationId == notificationId);
+
+        if (toUpdate != null)
+        {
+            toUpdate.IsRead = !toUpdate.IsRead;
+            await context.SaveChangesAsync();
+        }
+        return toUpdate;
     }
 }
