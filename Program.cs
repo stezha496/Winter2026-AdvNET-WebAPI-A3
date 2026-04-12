@@ -45,11 +45,9 @@ public class Program
             // Refresh expiry on activity
             options.SlidingExpiration = true;
 
-            // Prevent JavaScript from accessing the cookie (security)
-            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.None; // None for HTTP localhost
 
-            // Only send cookie over HTTPS
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.SameSite = SameSiteMode.Lax; // Add this for localhost
         });
 
         // Add repos

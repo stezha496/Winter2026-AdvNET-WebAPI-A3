@@ -28,12 +28,13 @@ public class AccountController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
     {
+        Console.WriteLine("Registering");
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         AppUser newUser = new AppUser
         {
-            UserName = dto.FirstName,
+            UserName = dto.UserName,
             Email = dto.Email,
             PhoneNumber = dto.PhoneNumber,
             EmployeeId = dto.EmployeeId,
@@ -45,9 +46,14 @@ public class AccountController : ControllerBase
         if (!result.Succeeded)
         {
             foreach (IdentityError error in result.Errors)
+            {
                 ModelState.AddModelError("", error.Description);
+            }
             return BadRequest(ModelState);
         }
+
+        // Assign Employee role by default
+        await _userManager.AddToRoleAsync(newUser, "Employee");
 
         return Ok(newUser);
     }

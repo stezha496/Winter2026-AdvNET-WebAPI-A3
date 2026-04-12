@@ -5,10 +5,13 @@ namespace _991745453_IT_ASSET_API.Models.DTOs;
 public class RegisterDTO
 {
     [Required]
-    public string? FirstName { get; set; }
+    public string? UserName { get; set; }
 
     [Required]
-    public string? LastName { get; set; }
+    public string? EmployeeId { get; set; }
+
+    [Required]
+    public string? Department { get; set; }
 
     [Required]
     [EmailAddress]
@@ -20,10 +23,4 @@ public class RegisterDTO
 
     [Required]
     public string? Password { get; set; }
-
-    [Required]
-    public string? EmployeeId { get; set; }
-
-    [Required]
-    public string? Department { get; set; }
 }

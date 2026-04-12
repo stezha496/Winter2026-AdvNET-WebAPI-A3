@@ -46,7 +46,6 @@ public class AppUsersController : ControllerBase
         return Ok(currentUser);
     }
 
-    // TODO
     // Updates password, phone number
     [HttpPut("update")]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO dto)
@@ -62,5 +61,22 @@ public class AppUsersController : ControllerBase
             return BadRequest(errors);
 
         return Ok(currentUser);
+    }
+
+    // Gets user role (identity)
+
+    [HttpGet("{id}/role")]
+    public async Task<IActionResult> GetUserRole(string id)
+    {
+        AppUser? user = await userManager.FindByIdAsync(id);
+
+        if (user == null)
+            return NotFound();
+
+        IList<string> roles = await userManager.GetRolesAsync(user);
+        string role = roles.FirstOrDefault() ?? "Employee";
+
+        Console.WriteLine($"Role for user {id}: {role}");
+        return Ok(role);
     }
 }
