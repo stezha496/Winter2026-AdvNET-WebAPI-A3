@@ -13,6 +13,4 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Notification> Notifications { get; set; }
     // Identity
     public DbSet<AppUser> AppUsers { get; set; }
-    public DbSet<Employee> Employees { get; set; }
-    public DbSet<ITAdmin> Admins { get; set; }
 }

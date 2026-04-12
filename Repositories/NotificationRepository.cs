@@ -9,7 +9,7 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
     public async Task<List<Notification>> GetNotificationsByUser(string userId)
     {
         return await context.Notifications
-            .Where(x => x.UserId == userId)
+            .Where(n => n.UserId == userId)
             .ToListAsync();
     }
 
@@ -24,5 +24,17 @@ public class NotificationRepository(AppDbContext context) : INotificationReposit
             await context.SaveChangesAsync();
         }
         return toUpdate;
+    }
+
+    public async Task SaveNotificationAsync(Notification notification)
+    {
+        await context.Notifications.AddAsync(notification);
+        await context.SaveChangesAsync();
+    }
+
+    // Checks if notification exists for a specific loan. To avoid duplicates
+    public async Task<bool> NotificationExistsForLoan(int loanId)
+    {
+        return await context.Notifications.AnyAsync(n => n.LoanId == loanId);
     }
 }

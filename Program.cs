@@ -39,6 +39,9 @@ public class Program
 
         var app = builder.Build();
 
+        // Seed database with test data
+        SeedData.SeedDatabase(app);
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

@@ -6,5 +6,6 @@ public class Loan
     public string? UserId { get; set; }
     public int? EquipmentId { get; set; }
     public DateOnly? CheckoutDate { get; set; }
+    public DateOnly? ReturnDate { get; set; }
     public DateOnly? ExpectedReturnDate { get; set; }
 }

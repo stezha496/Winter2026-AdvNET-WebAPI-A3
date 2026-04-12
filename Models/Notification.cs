@@ -6,5 +6,6 @@ public class Notification
     public string? UserId { get; set; }
     public string? Message { get; set; }
     public bool IsRead { get; set; }
+    public int LoanId { get; set; }
     public DateOnly CreatedAt { get; set; } // Using DateOnly instead of DateTime for easier formatting
 }
