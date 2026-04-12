@@ -27,6 +27,31 @@ public class Program
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
 
+        // Configure Cookie Authentication
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            // Where to redirect if not logged in
+            options.LoginPath = "/api/account/login";
+
+            // Where to redirect if logged in but wrong role
+            options.AccessDeniedPath = "/api/account/access-denied";
+
+            // How long the cookie lasts
+            options.ExpireTimeSpan = TimeSpan.FromHours(1);
+
+            // Cookie name in the browser
+            options.Cookie.Name = "YourAppCookie";
+
+            // Refresh expiry on activity
+            options.SlidingExpiration = true;
+
+            // Prevent JavaScript from accessing the cookie (security)
+            options.Cookie.HttpOnly = true;
+
+            // Only send cookie over HTTPS
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
+
         // Add repos
         builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
         builder.Services.AddScoped<ILoanRepository, LoanRepository>();

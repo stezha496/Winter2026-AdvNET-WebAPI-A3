@@ -80,4 +80,11 @@ public class AccountController : ControllerBase
         return Ok("Logged out successfully.");
     }
 
+    // For Cookie access denial
+    [AllowAnonymous]
+    [HttpGet("access-denied")]
+    public IActionResult AccessDenied()
+    {
+        return StatusCode(403, "You do not have permission to access this resource.");
+    }
 }
