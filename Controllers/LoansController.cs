@@ -17,15 +17,15 @@ public class LoansController : ControllerBase
     }
 
     [HttpGet("my-loans")]
-    public List<Loan> GetLoansByUser(int userId)
+    public List<Loan> GetLoansByUser(string userId)
     {
-        return _loanRepository.GetLoansByUser(userId);
+        return _loanRepository.GetLoansByUser(userId).Result;
     }
 
     [HttpGet("all")]
     public List<Loan> GetAllLoans()
     {
-        return _loanRepository.GetAllLoans();
+        return _loanRepository.GetAllLoans().Result;
     }
 
     [HttpPost("api/checkout/{equipmentId}")]
@@ -33,12 +33,12 @@ public class LoansController : ControllerBase
     {
         Loan checkout = new Loan();
 
-        return _loanRepository.CheckoutAsset(checkout);
+        return _loanRepository.CheckoutAsset(checkout).Result;
     }
 
     [HttpPost("api/checkin/{loanId}")]
     public Loan CheckinAsset(int loanId)
     {
-        return _loanRepository.CheckinAsset(loanId);
+        return _loanRepository.CheckinAsset(loanId).Result;
     }
 }

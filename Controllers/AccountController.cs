@@ -1,4 +1,5 @@
 ﻿using _991745453_IT_ASSET_API.Models;
+using _991745453_IT_ASSET_API.Models.Identity;
 using _991745453_IT_ASSET_API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +10,15 @@ namespace _991745453_IT_ASSET_API.Controllers;
 public class AccountController : ControllerBase
 {
     // Inject repository
-    private readonly IUserRepository _userRepository;
+    private readonly IAppUserRepository _userRepository;
 
-    public AccountController(IUserRepository userRepository)
+    public AccountController(IAppUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
 
     [HttpPost("register")]
-    public User Post([FromBody] User user) => _userRepository.AddUser(user);
+    public Task Post([FromBody] AppUser user) => _userRepository.AddUser(user);
 
     //[HttpPost("login")]
 

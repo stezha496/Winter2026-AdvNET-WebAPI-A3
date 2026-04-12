@@ -1,4 +1,5 @@
 ﻿using _991745453_IT_ASSET_API.Models;
+using _991745453_IT_ASSET_API.Models.Identity;
 using _991745453_IT_ASSET_API.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,26 +7,26 @@ namespace _991745453_IT_ASSET_API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class AppUsersController : ControllerBase
 {
     // Inject repository
-    private readonly IUserRepository _userRepository;
-    public UsersController(IUserRepository userRepository)
+    private readonly IAppUserRepository _userRepository;
+    public AppUsersController(IAppUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
 
     [HttpGet]
-    public List<User> GetAllUsers()
+    public List<AppUser> GetAllUsers()
     {
-        return _userRepository.GetAllUsers();
+        return _userRepository.GetAllUsers().Result;
     }
 
     // Get currently logged in user
     [HttpGet("me")]
-    public User GetCurrentUser(int userId)
+    public AppUser GetCurrentUser(string userId)
     {
-        return _userRepository.GetUserById(userId);
+        return _userRepository.GetUserById(userId).Result;
     }
 
     // TODO
