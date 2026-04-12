@@ -1,14 +1,15 @@
 ﻿using _991745453_IT_ASSET_API.Models;
 using _991745453_IT_ASSET_API.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _991745453_IT_ASSET_API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class EquipmentController : ControllerBase
 {
-    // Inject repository
     private readonly IEquipmentRepository _equipmentRepository;
 
     public EquipmentController(IEquipmentRepository equipmentRepository)
@@ -17,28 +18,44 @@ public class EquipmentController : ControllerBase
     }
 
     [HttpGet]
-    public List<Equipment> GetAllEquipment() {
-        return _equipmentRepository.GetAllEquipment().Result;
+    public async Task<IActionResult> GetAllEquipment()
+    {
+        List<Equipment> equipment = await _equipmentRepository.GetAllEquipment();
+        return Ok(equipment);
     }
 
     [HttpGet("{id}")]
-    public Equipment GetEquipmentById(int userId)
+    public async Task<IActionResult> GetEquipmentById(int id)
     {
-        return _equipmentRepository.GetEquipmentById(userId).Result;
+        Equipment? equipment = await _equipmentRepository.GetEquipmentById(id);
+
+        if (equipment == null)
+            return NotFound();
+
+        return Ok(equipment);
     }
 
+    [Authorize(Roles = "ITAdmin")]
     [HttpPost]
-    public Task Post([FromBody] Equipment equipment) => _equipmentRepository.AddEquipment(equipment);
-
-    [HttpPost("{id}")]
-    public void UpdateEquipment(int equipmentId, Equipment newEquipment)
+    public async Task<IActionResult> AddEquipment([FromBody] Equipment equipment)
     {
-        _equipmentRepository.UpdateEquipment(equipmentId, newEquipment);
+        await _equipmentRepository.AddEquipment(equipment);
+        return Ok(equipment);
     }
 
-    [HttpDelete("{id}")]
-    public void DeleteEquipmentById(int equipmentId)
+    [Authorize(Roles = "ITAdmin")]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateEquipment(int id, [FromBody] Equipment newEquipment)
     {
-        _equipmentRepository.DeleteEquipmentById(equipmentId);
+        await _equipmentRepository.UpdateEquipment(id, newEquipment);
+        return Ok(newEquipment);
+    }
+
+    [Authorize(Roles = "ITAdmin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEquipmentById(int id)
+    {
+        await _equipmentRepository.DeleteEquipmentById(id);
+        return Ok();
     }
 }

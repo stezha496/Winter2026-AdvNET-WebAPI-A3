@@ -1,40 +1,66 @@
 ﻿using _991745453_IT_ASSET_API.Models;
+using _991745453_IT_ASSET_API.Models.DTOs;
 using _991745453_IT_ASSET_API.Models.Identity;
 using _991745453_IT_ASSET_API.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _991745453_IT_ASSET_API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AppUsersController : ControllerBase
 {
     // Inject repository
     private readonly IAppUserRepository _userRepository;
-    public AppUsersController(IAppUserRepository userRepository)
+    private UserManager<AppUser> userManager;
+
+    public AppUsersController(
+        IAppUserRepository userRepository,
+        UserManager<AppUser> userManager
+        )
     {
         _userRepository = userRepository;
+        this.userManager = userManager;
     }
 
+    [Authorize(Roles = "ITAdmin")]
     [HttpGet]
-    public List<AppUser> GetAllUsers()
+    public async Task<IActionResult> GetAllUsers()
     {
-        return _userRepository.GetAllUsers().Result;
+        List<AppUser> allUsers = await _userRepository.GetAllUsers();
+        return Ok(allUsers);
     }
 
     // Get currently logged in user
     [HttpGet("me")]
-    public AppUser GetCurrentUser(string userId)
+    public async Task<IActionResult> GetCurrentUser()
     {
-        return _userRepository.GetUserById(userId).Result;
+        AppUser? currentUser = await userManager.GetUserAsync(User);
+
+        if (currentUser == null)
+            return Unauthorized();
+
+        return Ok(currentUser);
     }
 
     // TODO
-    // Can only have 1 parameter?
     // Updates password, phone number
-    //[HttpPut("update")]
-    //public void UpdateCurrentUser(User currentUser, User updatedUser)
-    //{
-    //    _userRepository.UpdateCurrentUser(currentUser, updatedUser);
-    //}
+    [HttpPut("update")]
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO dto)
+    {
+        AppUser? currentUser = await userManager.FindByNameAsync(dto.UserName!);
+
+        if (currentUser == null)
+            return NotFound();
+
+        List<string> errors = await _userRepository.UpdateGivenUser(currentUser, dto.Password!, dto.PhoneNumber);
+
+        if (errors.Any())
+            return BadRequest(errors);
+
+        return Ok(currentUser);
+    }
 }

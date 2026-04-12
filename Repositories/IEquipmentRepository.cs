@@ -8,6 +8,6 @@ public interface IEquipmentRepository
     Task<Equipment?> GetEquipmentById(int id);
     Task AddEquipment(Equipment equipment);
 
-    Task UpdateEquipment(int equipmentId, Equipment equipment);
+    Task UpdateEquipment(int id, Equipment newEquipment);
     Task DeleteEquipmentById(int id);
 }

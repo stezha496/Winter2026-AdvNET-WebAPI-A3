@@ -7,14 +7,46 @@ namespace _991745453_IT_ASSET_API.Repositories;
 
 public class LoanRepository(AppDbContext context) : ILoanRepository
 {
-    public Task<Loan> CheckinAsset(int loanId)
+    public async Task<Loan?> CheckoutAsset(Loan loan)
     {
-        throw new NotImplementedException();
+        // Check if equipment is available
+        Equipment? equipment = await context.Equipment.FirstOrDefaultAsync(e => e.Id == loan.EquipmentId);
+
+        if (equipment == null || !equipment.IsAvailable)
+            return null;
+
+        // Set expected return date to 2 weeks from checkout
+        loan.CheckoutDate = DateOnly.FromDateTime(DateTime.Now);
+        loan.ExpectedReturnDate = DateOnly.FromDateTime(DateTime.Now.AddDays(14));
+
+        // Mark equipment as unavailable
+        equipment.IsAvailable = false;
+
+        await context.Loans.AddAsync(loan);
+        await context.SaveChangesAsync();
+
+        return loan;
     }
 
-    public Task<Loan> CheckoutAsset(Loan checkout)
+    // Updates loan and equipment
+    public async Task<Loan?> CheckinAsset(int loanId)
     {
-        throw new NotImplementedException();
+        Loan? loan = await context.Loans.FirstOrDefaultAsync(l => l.Id == loanId);
+
+        if (loan == null)
+            return null;
+
+        // Set the return date to today
+        loan.ReturnDate = DateOnly.FromDateTime(DateTime.Now);
+
+        // Mark equipment as available again
+        Equipment? equipment = await context.Equipment.FirstOrDefaultAsync(e => e.Id == loan.EquipmentId);
+        if (equipment != null)
+            equipment.IsAvailable = true;
+
+        await context.SaveChangesAsync();
+
+        return loan;
     }
 
     public async Task<List<Loan>> GetAllLoans()

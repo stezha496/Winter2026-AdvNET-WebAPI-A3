@@ -29,8 +29,16 @@ public class EquipmentRepository(AppDbContext context) : IEquipmentRepository
         return await context.Equipment.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task UpdateEquipment(int equipmentId, Equipment equipment)
+    public async Task UpdateEquipment(int id, Equipment newEquipment)
     {
-        throw new NotImplementedException();
+        Equipment? existing = await context.Equipment.FirstOrDefaultAsync(e => e.Id == id);
+
+        if (existing == null) return;
+
+        existing.AssetTag = newEquipment.AssetTag;
+        existing.DeviceName = newEquipment.DeviceName;
+        existing.IsAvailable = newEquipment.IsAvailable;
+
+        await context.SaveChangesAsync();
     }
 }

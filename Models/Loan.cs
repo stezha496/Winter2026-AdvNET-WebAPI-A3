@@ -3,6 +3,7 @@
 public class Loan
 {
     public int Id { get; set; }
+    // This will match AppUser.EmployeeId
     public string? UserId { get; set; }
     public int? EquipmentId { get; set; }
     public DateOnly? CheckoutDate { get; set; }

@@ -7,5 +7,5 @@ public interface IAppUserRepository
     Task AddUser(AppUser user);
     Task<List<AppUser>> GetAllUsers();   
     Task<AppUser?> GetUserById(string id);
-    Task UpdateCurrentUser(AppUser currentUser, AppUser updatedUser); 
+    Task<List<string>> UpdateGivenUser(AppUser user, string password, string? phoneNumber);
 }

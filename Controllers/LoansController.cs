@@ -1,44 +1,77 @@
 ﻿using _991745453_IT_ASSET_API.Models;
+using _991745453_IT_ASSET_API.Models.Identity;
 using _991745453_IT_ASSET_API.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _991745453_IT_ASSET_API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class LoansController : ControllerBase
 {
-    // Inject repository
     private readonly ILoanRepository _loanRepository;
+    private readonly UserManager<AppUser> _userManager;
 
-    public LoansController(ILoanRepository loanRepository)
+    public LoansController(ILoanRepository loanRepository, UserManager<AppUser> userManager)
     {
         _loanRepository = loanRepository;
+        _userManager = userManager;
     }
 
     [HttpGet("my-loans")]
-    public List<Loan> GetLoansByUser(string userId)
+    public async Task<IActionResult> GetLoansByUser()
     {
-        return _loanRepository.GetLoansByUser(userId).Result;
+        AppUser? currentUser = await _userManager.GetUserAsync(User);
+
+        if (currentUser == null)
+            return Unauthorized();
+
+        List<Loan> loans = await _loanRepository.GetLoansByUser(currentUser.Id);
+        return Ok(loans);
     }
 
+    [Authorize(Roles = "ITAdmin")]
     [HttpGet("all")]
-    public List<Loan> GetAllLoans()
+    public async Task<IActionResult> GetAllLoans()
     {
-        return _loanRepository.GetAllLoans().Result;
+        List<Loan> loans = await _loanRepository.GetAllLoans();
+        return Ok(loans);
     }
 
-    [HttpPost("api/checkout/{equipmentId}")]
-    public Loan CheckoutAsset(int equipmentId)
+    [HttpPost("checkout/{equipmentId}")]
+    public async Task<IActionResult> CheckoutAsset(int equipmentId)
     {
-        Loan checkout = new Loan();
+        AppUser? currentUser = await _userManager.GetUserAsync(User);
 
-        return _loanRepository.CheckoutAsset(checkout).Result;
+        if (currentUser == null)
+            return Unauthorized();
+
+        Loan checkout = new Loan
+        {
+            UserId = currentUser.Id,
+            EquipmentId = equipmentId,
+            CheckoutDate = DateOnly.FromDateTime(DateTime.Now)
+        };
+
+        Loan? result = await _loanRepository.CheckoutAsset(checkout);
+
+        if (result == null)
+            return BadRequest("Checkout failed.");
+
+        return Ok(result);
     }
 
-    [HttpPost("api/checkin/{loanId}")]
-    public Loan CheckinAsset(int loanId)
+    [HttpPost("checkin/{loanId}")]
+    public async Task<IActionResult> CheckinAsset(int loanId)
     {
-        return _loanRepository.CheckinAsset(loanId).Result;
+        Loan? loan = await _loanRepository.CheckinAsset(loanId);
+
+        if (loan == null)
+            return NotFound();
+
+        return Ok(loan);
     }
 }
