@@ -45,9 +45,13 @@ public class NotificationsController : ControllerBase
 
             IdentityResult result = await userManager.CreateAsync(testUser, "TestPassword1!");
             if (result.Succeeded)
+            {
                 return Ok(testUser);
+            }
             else
+            {
                 Errors(result);
+            }
         }
         return BadRequest(ModelState);
     }
@@ -71,14 +75,19 @@ public class NotificationsController : ControllerBase
         foreach (Loan loan in activeLoans)
         {
             // Skip loans with no expected return date
-            if (loan.ExpectedReturnDate == null) continue;
+            if (loan.ExpectedReturnDate == null) {
+                continue;
+            }
 
             // Check if overdue
             if (loan.ExpectedReturnDate < today)
             {
                 // Prevent duplicate notifications for the same loan
                 bool exists = await _notificationRepository.NotificationExistsForLoan(loan.Id);
-                if (exists) continue;
+                if (exists)
+                {
+                    continue;
+                }
 
                 Notification notification = new Notification
                 {
@@ -101,7 +110,9 @@ public class NotificationsController : ControllerBase
         AppUser? currentUser = await userManager.GetUserAsync(User);
 
         if (currentUser == null)
+        {
             return Unauthorized();
+        }
 
         List<Notification> notifications = await _notificationRepository.GetNotificationsByUser(currentUser.Id);
 
@@ -114,7 +125,9 @@ public class NotificationsController : ControllerBase
         Notification? notification = await _notificationRepository.UpdateNotificationRead(id);
 
         if (notification == null)
+        {
             return NotFound();
+        }
 
         return Ok(notification);
     }
@@ -123,6 +136,8 @@ public class NotificationsController : ControllerBase
     void Errors(IdentityResult result)
     {
         foreach (IdentityError error in result.Errors)
+        {
             ModelState.AddModelError("", error.Description);
+        }
     }
 }

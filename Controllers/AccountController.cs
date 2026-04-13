@@ -30,7 +30,9 @@ public class AccountController : ControllerBase
     {
         Console.WriteLine("Registering");
         if (!ModelState.IsValid)
+        {
             return BadRequest(ModelState);
+        }
 
         AppUser newUser = new AppUser
         {
@@ -63,17 +65,23 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDTO dto)
     {
         if (!ModelState.IsValid)
+        {
             return BadRequest(ModelState);
+        }
 
         AppUser? user = await _userManager.FindByNameAsync(dto.UserName!);
 
         if (user == null)
+        {
             return Unauthorized("Invalid username or password.");
+        }
 
         Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(user, dto.Password!, false, false);
 
         if (!result.Succeeded)
+        {
             return Unauthorized("Invalid username or password.");
+        }
 
         return Ok(user);
     }

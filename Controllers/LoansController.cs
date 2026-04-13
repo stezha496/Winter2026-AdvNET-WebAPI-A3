@@ -27,7 +27,9 @@ public class LoansController : ControllerBase
         AppUser? currentUser = await _userManager.GetUserAsync(User);
 
         if (currentUser == null)
+        {
             return Unauthorized();
+        }
 
         List<Loan> loans = await _loanRepository.GetLoansByUser(currentUser.Id);
         return Ok(loans);
@@ -47,7 +49,9 @@ public class LoansController : ControllerBase
         AppUser? currentUser = await _userManager.GetUserAsync(User);
 
         if (currentUser == null)
+        {
             return Unauthorized();
+        }
 
         Loan checkout = new Loan
         {
@@ -59,7 +63,9 @@ public class LoansController : ControllerBase
         Loan? result = await _loanRepository.CheckoutAsset(checkout);
 
         if (result == null)
+        {
             return BadRequest("Checkout failed.");
+        }
 
         return Ok(result);
     }
@@ -70,7 +76,9 @@ public class LoansController : ControllerBase
         Loan? loan = await _loanRepository.CheckinAsset(loanId);
 
         if (loan == null)
+        {
             return NotFound();
+        }
 
         return Ok(loan);
     }

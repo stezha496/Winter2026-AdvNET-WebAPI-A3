@@ -41,7 +41,9 @@ public class AppUsersController : ControllerBase
         AppUser? currentUser = await userManager.GetUserAsync(User);
 
         if (currentUser == null)
+        {
             return Unauthorized();
+        }
 
         return Ok(currentUser);
     }
@@ -53,12 +55,16 @@ public class AppUsersController : ControllerBase
         AppUser? currentUser = await userManager.FindByNameAsync(dto.UserName!);
 
         if (currentUser == null)
+        {
             return NotFound();
+        }
 
         List<string> errors = await _userRepository.UpdateGivenUser(currentUser, dto.Password!, dto.PhoneNumber);
 
         if (errors.Any())
+        {
             return BadRequest(errors);
+        }
 
         return Ok(currentUser);
     }
@@ -71,12 +77,14 @@ public class AppUsersController : ControllerBase
         AppUser? user = await userManager.FindByIdAsync(id);
 
         if (user == null)
+        {
             return NotFound();
+        }
 
         IList<string> roles = await userManager.GetRolesAsync(user);
         string role = roles.FirstOrDefault() ?? "Employee";
 
-        Console.WriteLine($"Role for user {id}: {role}");
+        //Console.WriteLine($"Role for user {id}: {role}");
         return Ok(role);
     }
 }

@@ -34,22 +34,27 @@ public class AppUserRepository : IAppUserRepository
         return await context.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<List<string>> UpdateGivenUser(AppUser user, string password, string? phoneNumber)
+    public async Task<List<string>> UpdateGivenUser(AppUser user, string? password, string? phoneNumber)
     {
         List<string> errors = new List<string>();
 
-        // Update phone number
-        user.PhoneNumber = phoneNumber;
-        IdentityResult updateResult = await userManager.UpdateAsync(user);
-        if (!updateResult.Succeeded)
-            errors.AddRange(updateResult.Errors.Select(e => e.Description));
+        // Only update phone number if provided
+        if (!string.IsNullOrEmpty(phoneNumber))
+        {
+            user.PhoneNumber = phoneNumber;
+            IdentityResult updateResult = await userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+                errors.AddRange(updateResult.Errors.Select(e => e.Description));
+        }
 
-        // Update password
-        string resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
-        IdentityResult passwordResult = await userManager.ResetPasswordAsync(user, resetToken, password);
-        if (!passwordResult.Succeeded)
-            errors.AddRange(passwordResult.Errors.Select(e => e.Description));
-
+        // Only update password if provided
+        if (!string.IsNullOrEmpty(password))
+        {
+            string resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+            IdentityResult passwordResult = await userManager.ResetPasswordAsync(user, resetToken, password);
+            if (!passwordResult.Succeeded)
+                errors.AddRange(passwordResult.Errors.Select(e => e.Description));
+        }
         return errors;
     }
 }

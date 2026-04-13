@@ -30,7 +30,9 @@ public class EquipmentController : ControllerBase
         Equipment? equipment = await _equipmentRepository.GetEquipmentById(id);
 
         if (equipment == null)
+        {
             return NotFound();
+        }
 
         return Ok(equipment);
     }
