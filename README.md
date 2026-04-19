@@ -1,4 +1,4 @@
-WebAPI with Database Operations
+ASP.NET Core Web API with Entity Framework Core
 
 Technologies: C#, ASP.NET, .NET Framework, SQL Server, WebAPI, Entity Framework
 
